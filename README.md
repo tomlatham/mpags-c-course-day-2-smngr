@@ -9,6 +9,7 @@ Windows platforms with Visual Studio 2015 or better are also expected to
 work, but not tested.
 
 To build from a clone of this repository, create a build folder and run
+```
 $ cmake <PATH_TO_SOURCE>
 $ make
 
