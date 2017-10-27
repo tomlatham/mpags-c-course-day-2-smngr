@@ -6,18 +6,21 @@
 // For std::isalpha and std::isupper
 #include <cctype>
 
+// For filestream
+
+#include <fstream>
+
 // Project headers
 
 #include "transformChar.hpp"
 #include "processCommandLine.hpp"
+#include "outputStr.hpp"
 
 // Main function of the mpags-cipher program
 int main(int argc, char* argv[])
 {
   // Convert the command-line arguments into a more easily usable form
   const std::vector<std::string> cmdLineArgs {argv, argv+argc};
-
-
 
   // Options that might be set by the command-line arguments
   bool helpRequested {false};
@@ -61,28 +64,33 @@ int main(int argc, char* argv[])
 
   // Read in user input from stdin/file
   // Warn that input file option not yet implemented
-  if (!inputFile.empty()) {
-    std::cout << "[warning] input from file ('"
-              << inputFile
-              << "') not implemented yet, using stdin\n";
-  }
-
-  // Loop over each character from user input
-  // (until Return then CTRL-D (EOF) pressed)
-  while(std::cin >> inputChar)
+  if (inputFile.empty())
   {
-    inputText = transformChar( inputChar );
-
-  // Output the transliterated text
-  // Warn that output file option not yet implemented
-  if (!outputFile.empty()) {
-    std::cout << "[warning] output to file ('"
-              << outputFile
-              << "') not implemented yet, using stdout\n";
+    // Loop over each character from user input
+    // (until Return then CTRL-D (EOF) pressed)
+    while(std::cin >> inputChar)
+    {
+      inputText = transformChar( inputChar );
+      //std::cout << "test is " << inputText << std::endl;
+      outputStr(inputText, outputFile);
+    }
   }
 
-  std::cout << inputText << std::endl;
+  else
+  {
+    std::ifstream in_file {inputFile};    
+    while (in_file >> inputChar)
+    {
+    inputText = transformChar ( inputChar );
+    //std::cout << "text is " << inputText << std::endl;
+    outputStr(inputText, outputFile);
+    }
+    std::string eof_str{"\nEnd of File\n"} // A string to print in the output to indicate that the input file is finished
+    outputStr(,outputFile);
   }
+  
+  //std::cout << inputText << std::endl;
+  
   // No requirement to return from main, but we do so for clarity
   // and for consistency with other functions
   return 0;
