@@ -8,15 +8,11 @@ on a UNIX operating system.
 Windows platforms with Visual Studio 2015 or better are also expected to
 work, but not tested.
 
-To build from a clone of this repository, open a terminal window
-and change directory into that holding this README. Then run:
-```
-$ ls
-LICENSE          README.md        mpags-cipher.cpp
-$ g++ -Wall -Wextra -Werror -Wfatal-errors -pedantic -Wshadow mpags-cipher.cpp -o mpags-cipher
-$ ./mpags-cipher
-```
+To build from a clone of this repository, create a build folder and run
+$ cmake <PATH_TO_SOURCE>
+$ make
 
+```
 If no input file is supplied, `mpags-cipher` will wait for user input
 from the keyboard until RETURN followed by CTRL-D are pressed.
 To ensure the input text can be used with the character sets known to
@@ -37,11 +33,19 @@ follows:
 $ tree
 .
 └── MPAGS-Code
-    ├── LICENSE             License file, in our case MIT
-    ├── mpags-cipher.cpp    Main program C++ source file
-    └── README.md           This file, describes the project
+	├── CMakeLists.txt 					Contains build instructions for cmak
+	├── LICENSE                         License, currently MIT
+	├── MPAGSCipher                     dir containing headers and function declarations
+	│   ├── processCommandLine.cpp
+	│   ├── processCommandLine.hpp
+	│   ├── transformChar.cpp
+	│   └── transformChar.hpp
+	├── mpags-cipher.cpp 				Main CPP code
+	└── README.md                       This readme file
 
-1 directory, 3 files
+
+
+2 directory, 8 files
 ```
 
 # Copying
