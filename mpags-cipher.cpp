@@ -75,6 +75,15 @@ bool processCommandLine(
   std::string& inputFile,
   std::string& outputFile )
 {
+  /* processCommandLine reads command line arguments and returns
+  Boolean and Version flags, and input/output filename strings
+
+  bool helpRequested: returns 'true' if --help or -h is parsed
+  bool versionRequested: returns true if -v is parsed
+  string inputFile: returns input filename if -i is parsed
+  string outputFile: returns output filename if -o is parsed
+
+  */
 
   // Add a typedef that assigns another name for the given type for clarity
   typedef std::vector<std::string>::size_type size_type;
