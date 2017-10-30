@@ -21,8 +21,13 @@ add_executable(mpags-cipher
   MPAGSCipher/processCommandLine.hpp
   MPAGSCipher/outputStr.cpp
   MPAGSCipher/outputStr.hpp
-
+  MPAGSCipher/runCaesarCipher.cpp
+  MPAGSCipher/runCaesarCipher.hpp
 )
+
+# Copy 'test' file
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/long.txt
+      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 target_include_directories(mpags-cipher
   PRIVATE MPAGSCipher

@@ -22,10 +22,10 @@ void outputStr(std::string inputText, const std::string fname)
     else{
       std::ofstream out_file {fname, std::ios::app};
 
-      //if (out_file.good())
-      //{
+      if (out_file.good())
+      {
 	  	out_file << inputText; //<< std::endl;
-      //}
-      //std::cout << "Output written to file!" << std::endl;
+      }
+      std::cout << "Output written to file!" << std::endl;
     }
 }

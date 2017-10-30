@@ -15,6 +15,7 @@
 #include "transformChar.hpp"
 #include "processCommandLine.hpp"
 #include "outputStr.hpp"
+#include "runCaesarCipher.hpp"
 
 // Main function of the mpags-cipher program
 int main(int argc, char* argv[])
@@ -25,12 +26,18 @@ int main(int argc, char* argv[])
   // Options that might be set by the command-line arguments
   bool helpRequested {false};
   bool versionRequested {false};
+  bool keyDefined {false};
   std::string inputFile {""};
   std::string outputFile {""};
+  size_t key {0};
+  bool encrypt {true};
+  bool verbose {false};
 
   // Process the command line
 
-  processCommandLine(cmdLineArgs, helpRequested, versionRequested, inputFile, outputFile);
+  processCommandLine(cmdLineArgs, helpRequested, versionRequested, keyDefined, inputFile, outputFile, encrypt, key, verbose);
+
+  //std::cout << "Key is: " << key;
 
   // Handle help, if requested
   if (helpRequested) {
@@ -44,7 +51,12 @@ int main(int argc, char* argv[])
       << "  -i FILE          Read text to be processed from FILE\n"
       << "                   Stdin will be used if not supplied\n\n"
       << "  -o FILE          Write processed text to FILE\n"
-      << "                   Stdout will be used if not supplied\n\n";
+      << "                   Stdout will be used if not supplied\n"
+      << "  -k KEY           Caesar cipher will use this numeric key\n"
+      << "  -e|-encrypt      Default cipher behaviour; will encrypt the input\n"
+      << "  -d|-decryt       Used to decrypt a ciphered message with the key specified\n"
+      << "  -v|-verbose      Adds verbosity for debugging [not fully implemented]\n\n";
+
     // Help requires no further action, so return from main
     // with 0 used to indicate success
     return 0;
@@ -58,9 +70,15 @@ int main(int argc, char* argv[])
     return 0;
   }
 
+  if (!keyDefined) {
+    std::cout << "[error] key is invalid" << std::endl;
+    return 1;
+  }
+
   // Initialise variables for processing input text
   char inputChar {'x'};
   std::string inputText {""};
+  std::string outputText {""};
 
   // Read in user input from stdin/file
   // Warn that input file option not yet implemented
@@ -70,9 +88,9 @@ int main(int argc, char* argv[])
     // (until Return then CTRL-D (EOF) pressed)
     while(std::cin >> inputChar)
     {
-      inputText = transformChar( inputChar );
+      inputText += transformChar( inputChar );
       //std::cout << "test is " << inputText << std::endl;
-      outputStr(inputText, outputFile);
+      // outputStr(inputText, outputFile);
     }
   }
 
@@ -81,16 +99,26 @@ int main(int argc, char* argv[])
     std::ifstream in_file {inputFile};    
     while (in_file >> inputChar)
     {
-    inputText = transformChar ( inputChar );
+    inputText += transformChar ( inputChar );
     //std::cout << "text is " << inputText << std::endl;
-    outputStr(inputText, outputFile);
+    // outputStr(inputText, outputFile);
     }
-    std::string eof_str{"\nEnd of File\n"} // A string to print in the output to indicate that the input file is finished
-    outputStr(,outputFile);
+    std::string eof_str{"\nEnd of File\n"}; // A string to print in the output to indicate that the input file is finished
+    // outputStr(eof_str, outputFile);
   }
+
+  std::string cipher_output{""};
+
+  if (verbose)
+  {  std::cout << "String input to cipher: " << inputText << std::endl;
+  }
+
+  cipher_output = runCaesarCipher(inputText,key,encrypt);
+
+  std::cout << "Cipher output: " << std::endl;
   
-  //std::cout << inputText << std::endl;
-  
+  outputStr(cipher_output, outputFile); // If defined, function saves the cipher output to file. 
+
   // No requirement to return from main, but we do so for clarity
   // and for consistency with other functions
   return 0;

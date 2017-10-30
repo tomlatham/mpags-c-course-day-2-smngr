@@ -10,7 +10,11 @@ bool processCommandLine(
   const std::vector<std::string>& args,
   bool& helpRequested,
   bool& versionRequested, 
+  bool& keyDefined,
   std::string& inputFile,
-  std::string& outputFile );
+  std::string& outputFile, 
+  bool& encrypt,
+  size_t& key, 
+  bool& verbose);
 
 #endif //
