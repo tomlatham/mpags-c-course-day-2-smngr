@@ -5,6 +5,6 @@
 
 // Define output function
 
-void outputStr(std::string input_string, const std::string fname);
+void outputStr(const std::string& input_string, const std::string& fname);
 
 #endif //

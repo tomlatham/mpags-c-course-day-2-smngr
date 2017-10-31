@@ -4,7 +4,7 @@
 #include <vector>
 #include <sstream>
 
-// For std::isalpha and std::isupper
+// For std::isdigit
 #include <cctype>
 
 bool processCommandLine(
@@ -48,8 +48,8 @@ bool processCommandLine(
       // Next element is filename unless -i is the last argument
       if (i == nCmdLineArgs-1) {
         std::cerr << "[error] -i requires a filename argument" << std::endl;
-        // exit main with non-zero return to indicate failure
-        return 1;
+        // return false to indicate failure
+        return false;
         }
       else {
         // Got filename, so assign value and advance past it
@@ -62,8 +62,8 @@ bool processCommandLine(
       // Next element is filename unless -o is the last argument
       if (i == nCmdLineArgs-1) {
         std::cerr << "[error] -o requires a filename argument" << std::endl;
-        // exit main with non-zero return to indicate failure
-        return 1;
+        // return false to indicate failure
+        return false;
       }
       else {
         // Got filename, so assign value and advance past it
@@ -84,8 +84,8 @@ bool processCommandLine(
       // Next element is key unless -k or key is last argument
         if (i == nCmdLineArgs-1) {
         std::cerr << "[error] -k requires a key argument" << std::endl;
-        // exit main with non-zero return to indicate failure
-        return 1;
+        // return false to indicate failure
+        return false;
         }
 
       // Need to implement error check to confirm that key is an integer
@@ -95,7 +95,7 @@ bool processCommandLine(
 
         for (size_t n = 0; n < key_arg.length();n++)
         {
-          if(!isdigit( key_arg[n] )) // If a character in the key is non-numeric, then raise a flag and produce an error
+          if(!std::isdigit( key_arg[n] )) // If a character in the key is non-numeric, then raise a flag and produce an error
           {
              key_is_valid = false;
           }
@@ -107,28 +107,36 @@ bool processCommandLine(
         std::string key_str{args[i+1]};
         std::stringstream sstream(key_str);
         sstream >> key;
-        keyDefined = true;
+	// TEL: could also have used std::stoul for the conversion
+	// Check that the read from the stringstream succeeded
+	if ( sstream.good() || sstream.eof() ) {
+          keyDefined = true;
+	} else {
+          std::cout << "[error] key is not a valid positive integer" << std::endl;
+	  return false;
+	}
         ++i;
         }
         else
         {
-        std::cout << "[error] key is not a number" << std::endl;
-        return 1;
+        std::cout << "[error] key is not a positive integer" << std::endl;
+        // return false to indicate failure
+        return false;
         }
       }
 
     else if (args[i] == "-v" || args[i] == "-verbose")
     {
       verbose = true;
-      ++i;
     }
            
     else {
       // Have an unknown flag to output error message and return non-zero
       // exit status to indicate failure
       std::cerr << "[error] unknown argument '" << args[i] << "'\n";
-      return 1;
+      // return false to indicate failure
+      return false;
     }
   }
-  return 0;
+  return true;
 }

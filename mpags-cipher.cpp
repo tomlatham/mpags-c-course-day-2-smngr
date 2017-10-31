@@ -35,7 +35,11 @@ int main(int argc, char* argv[])
 
   // Process the command line
 
-  processCommandLine(cmdLineArgs, helpRequested, versionRequested, keyDefined, inputFile, outputFile, encrypt, key, verbose);
+  bool cmdlineValid { processCommandLine(cmdLineArgs, helpRequested, versionRequested, keyDefined, inputFile, outputFile, encrypt, key, verbose) };
+  if ( ! cmdlineValid ) {
+    std::cerr << "Problem parsing command line arguments, exiting" << std::endl;
+    return 1;
+  }
 
   //std::cout << "Key is: " << key;
 
@@ -54,7 +58,7 @@ int main(int argc, char* argv[])
       << "                   Stdout will be used if not supplied\n"
       << "  -k KEY           Caesar cipher will use this numeric key\n"
       << "  -e|-encrypt      Default cipher behaviour; will encrypt the input\n"
-      << "  -d|-decryt       Used to decrypt a ciphered message with the key specified\n"
+      << "  -d|-decrypt      Used to decrypt a ciphered message with the key specified\n"
       << "  -v|-verbose      Adds verbosity for debugging [not fully implemented]\n\n";
 
     // Help requires no further action, so return from main
@@ -97,13 +101,17 @@ int main(int argc, char* argv[])
   else
   {
     std::ifstream in_file {inputFile};    
+    if ( ! in_file.good() ) {
+      std::cerr << "[error] problem reading from input file: " << inputFile << std::endl;
+      return 1;
+    }
     while (in_file >> inputChar)
     {
     inputText += transformChar ( inputChar );
     //std::cout << "text is " << inputText << std::endl;
     // outputStr(inputText, outputFile);
     }
-    std::string eof_str{"\nEnd of File\n"}; // A string to print in the output to indicate that the input file is finished
+    //std::string eof_str{"\nEnd of File\n"}; // A string to print in the output to indicate that the input file is finished
     // outputStr(eof_str, outputFile);
   }
 
